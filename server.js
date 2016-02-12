@@ -12,10 +12,19 @@ http.listen(PORT, function () {
   console.log('Server started!');
 });
 
+io.on('connection', function (socket) {
+  console.log('User connected via socket.io!');
+
+  socket.emit('A0', {
+    name: 'A0 pin',
+    text: 'Gotten voltage',
+    data: A0
+  });
+});
 /////////////////////////////////////// Server //
 
 // Arduino //////////////////////////////////////
-
+var A0 = 0;
 var five = require('johnny-five'),
     temporal = require('temporal'),
     board;
@@ -23,18 +32,8 @@ var five = require('johnny-five'),
 var board = new five.Board();
 
 board.on('ready', function () {
-  var num;
-  this.pinMode(9, five.Pin.PWM);
-  for(var i=0; i<255; i++){
-    setTimeout(function () {
-      num = i;
-    }, 2000);
-      this.analogWrite(9, i);
-  }
-
+  this.pinMode(0, five.Pin.ANALOG);
+  A0 = this.analogRead(9);
 });
 
-// setTimeout(function () {
-  //   // process
-// }, 1000);
 ////////////////////////////////////// Arduino //
