@@ -1,4 +1,4 @@
-// Server ///////////////////////////////////////
+// Server ///////////////////////////////////////////////////////////
 
 var PORT = process.env.PORT || 3000;
 var express = require('express');
@@ -15,72 +15,59 @@ http.listen(PORT, function () {
 io.on('connection', function (socket) {
   console.log('User connected via socket.io!');
 
-  socket.emit('A0', {
-    name: 'A0 pin',
-    text: 'Gotten voltage',
+  socket.emit('dataframe', {
+    name: 'data frame from xbee',
+    text: 'Gotten data!',
     data: A0
   });
 });
-/////////////////////////////////////// Server //
 
-// Arduino //////////////////////////////////////
-var five = require('johnny-five'),
-    temporal = require('temporal'),
-    board;
+//////////////////////////////////////////////////////////// Server //
 
-var five = require("johnny-five"),
-  temporal = require("temporal"),
-  board;
+// Arduino ///////////////////////////////////////////////////////////
+
+var five = require('johnny-five'), temporal = require('temporal'), board;
 
 board = new five.Board();
 
 board.on("ready", function(){
   console.log("CONNECTED");
 
-//  this.pinMode(0, five.Pin.ANALOG);
-//	var A0 = this.analogRead(9);
-//	console.log(A0);
+  var pm13 = this.pinMode(13, five.Pin.OUTPUT);
+  var ledtest = function(){	pm13.digitalWrite(13, 1); };
+  var ledstop = function(){	pm13.digitalWrite(13, 0); };
 
-  var servoRotateR = new five.Servo(13);
-  var servoRotateL = new five.Servo(12);
-  var servoSlantR = new five.Servo(11);
-  var servoSlantL = new five.Servo(10);
+  ledtest();
+  setTimeout(() => { ledstop(); }, 2000);
 
-//  this.pinMode(1, five.Pin.ANALOG);
-  temporal.queue([{
-    // Initial servo motor state
-    delay: 0,
-    task: function(){
-      servoRotateR.min();
-      servoRotateL.min();
-      servoSlantR.min();
-      servoSlantL.min();
-    }
-  },{
-    // Flying Start
-    delay: 5000, // waiting time about 5 seconds
-    task: function(){
-      servoSlantR.center();
-      servoSlantL.center();
-    }
-  },{
-    delay: 10000, // 10 seconds
-    task: function(){
-      servo.stop();
-    }
-  },{
-    // Keeping the altitude
-    delay: 1000,
-    task: function(){
-      servoSlantR.min();
-      servoSlantL.min();
-    }
-  },{
-    // Moving start
-    delay: 2000,
-    task: function(){
-      servo.to(0);
-    }
-  }]);
 });
-////////////////////////////////////// Arduino //
+
+/////////////////////////////////////////////////////////// Arduino //
+
+// Xbee //////////////////////////////////////////////////////////////
+
+var SerialPort = require('serialport').SerialPort, xbee = require('xbee');
+
+var serial_xbee = new SerialPort('COM5', {
+	parser: xbee.packetParser()
+});
+
+serial_xbee.on('data', function(data){
+	console.log('xbee data received: ' + data.type);
+//	var voltage = 1.2 * (ain3hi * 0x0100 + ain3lo) / 0x03ff;
+//	var temperature = (voltage - 0.6) * 100;
+	console.log(ain3hi + ' ' + data.bytes[1] + ' ' + ain3lo + ' ' + data.bytes[3]+ ' ' + data.bytes[4]+ ' ' + data.bytes[5]+ ' ' + data.bytes[6]+ ' ' + data.bytes[7]+ ' ' + data.bytes[8]+ ' ' + data.bytes[9]+ ' ' + data.bytes[10]+ ' ' + data.bytes[11]+ ' ' + data.bytes[12]+ ' ' + data.bytes[13]+ ' ' + data.bytes[14]+ ' ' + data.bytes[15]+ ' ' + data.bytes[16]+ ' ' + data.bytes[17]+ ' ' + data.bytes[18]+ ' ' + data.bytes[19]+ ' ' + data.bytes[20]+ ' ' + data.bytes[21]+ ' ' + data.bytes[22]);
+});
+
+var atc = new xbee.RemoteATCommand();
+atc.setCommand('IS'); //IS
+atc.destination64 = [0x00, 0x13, 0xa2, 0x00, 0x40, 0xbb, 0xb5, 0x2b]; // Child xbee address
+atc.destination16 = [0xff, 0xfe];
+
+setInterval(function(){
+	serial_xbee.write( atc.getBytes() ); //
+}, 2000);
+
+
+
+////////////////////////////////////////////////////////////// Xbee //
