@@ -1,7 +1,7 @@
 var serialport = require('serialport');
 var SerialPort = serialport.SerialPort;
 
-var sp = new SerialPort('COM5', {
+var sp = new SerialPort('COM4', {
 	baudrate: 57600,
 	dataBits: 8,
 	parity: 'none',
