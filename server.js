@@ -14,12 +14,6 @@ http.listen(PORT, function () {
 
 io.on('connection', function (socket) {
   console.log('User connected via socket.io!');
-
-  socket.emit('dataframe', {
-    name: 'data frame from xbee',
-    text: 'Gotten data!',
-    data: A0
-  });
 });
 
 //////////////////////////////////////////////////////////// Server //
@@ -53,10 +47,15 @@ var serial_xbee = new SerialPort('COM5', {
 });
 
 serial_xbee.on('data', function(data){
-	console.log('xbee data received: ' + data.type);
-//	var voltage = 1.2 * (ain3hi * 0x0100 + ain3lo) / 0x03ff;
-//	var temperature = (voltage - 0.6) * 100;
-	console.log(ain3hi + ' ' + data.bytes[1] + ' ' + ain3lo + ' ' + data.bytes[3]+ ' ' + data.bytes[4]+ ' ' + data.bytes[5]+ ' ' + data.bytes[6]+ ' ' + data.bytes[7]+ ' ' + data.bytes[8]+ ' ' + data.bytes[9]+ ' ' + data.bytes[10]+ ' ' + data.bytes[11]+ ' ' + data.bytes[12]+ ' ' + data.bytes[13]+ ' ' + data.bytes[14]+ ' ' + data.bytes[15]+ ' ' + data.bytes[16]+ ' ' + data.bytes[17]+ ' ' + data.bytes[18]+ ' ' + data.bytes[19]+ ' ' + data.bytes[20]+ ' ' + data.bytes[21]+ ' ' + data.bytes[22]);
+
+  io.emit('data', {
+    name: 'DataFrame',
+    text: 'From Child Xbee',
+    type: data.type
+  });
+
+	// console.log('xbee data received: ' + data.type);
+	// console.log(data.bytes[0] + ' ' + data.bytes[1] + ' ' + data.bytes[2] + ' ' + data.bytes[3]+ ' ' + data.bytes[4]+ ' ' + data.bytes[5]+ ' ' + data.bytes[6]+ ' ' + data.bytes[7]+ ' ' + data.bytes[8]+ ' ' + data.bytes[9]+ ' ' + data.bytes[10]+ ' ' + data.bytes[11]+ ' ' + data.bytes[12]+ ' ' + data.bytes[13]+ ' ' + data.bytes[14]+ ' ' + data.bytes[15]+ ' ' + data.bytes[16]+ ' ' + data.bytes[17]+ ' ' + data.bytes[18]+ ' ' + data.bytes[19]+ ' ' + data.bytes[20]+ ' ' + data.bytes[21]+ ' ' + data.bytes[22]);
 });
 
 var atc = new xbee.RemoteATCommand();
@@ -64,10 +63,56 @@ atc.setCommand('IS'); //IS
 atc.destination64 = [0x00, 0x13, 0xa2, 0x00, 0x40, 0xbb, 0xb5, 0x2b]; // Child xbee address
 atc.destination16 = [0xff, 0xfe];
 
-setInterval(function(){
-	serial_xbee.write( atc.getBytes() ); //
-}, 2000);
-
-
+  setTimeout(() => { serial_xbee.write( atc.getBytes() ); }, 5000);
+//setInterval(function(){
+//	serial_xbee.write( atc.getBytes() ); //
+//}, 2000);
 
 ////////////////////////////////////////////////////////////// Xbee //
+
+// Apps //////////////////////////////////////////////////////////////
+
+var weather = require('./weather.js');
+var location = require('./location.js');
+
+// setup yargs to have a --location or -l arguments
+var argv = require('yargs')
+	.option('location', {
+		alias: 'l',
+		demend: false,
+		desicribe: 'Location to fetch weather for',
+		type: 'string'
+	})
+	.help('help')
+	.argv;
+
+	if(typeof argv.l === 'string' && argv.l.length > 0){
+		console.log('Location was provided');
+		weather(argv.l).then(function (currentWeather){
+			console.log(currentWeather.name);
+
+      io.emit('currentWeather', {
+        name: currentWeather.name,
+        temp: currentWeather.main.temp,
+        weater: currentWeather.weather.main,
+        humidity: currentWeather.main.humidity,
+        windspeed: currentWeather.wind.speed,
+        winddeg: currentWeather.wind.deg,
+        clouds: currentWeather.clouds.all
+      });
+
+		}).catch(function (error){
+			console.log(error);
+		});
+	}else{
+		console.log('Location was not provided');
+		location().then(function (loc) {
+			return weather(loc.city);
+		}).then(function (currentWeather){
+			console.log(currentWeather);
+		}).catch(function (error){
+			console.log(error);
+		});
+	}
+
+////////////////////////////////////////////////////////////// Apps //

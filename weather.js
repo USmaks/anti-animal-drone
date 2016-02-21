@@ -24,7 +24,8 @@ module.exports = function(location){
 			}else{
 				//		callback(JSON.stringify(body, null, 4));
 				// It's ~~~~ in Chofu!
-				resolve('It\'s ' + body.main.temp + ' in ' + body.name + '!\nWind speed is ' + body.wind.speed + 'm/s,\nits degrees is ' + body.wind.deg + '!\nJust let you know, Cloudiness is ' + body.clouds.all + '%!');
+				resolve(body);
+				// resolve('It\'s ' + body.main.temp + ' in ' + body.name + '!\nWind speed is ' + body.wind.speed + 'm/s,\nits degrees is ' + body.wind.deg + '!\nJust let you know, Cloudiness is ' + body.clouds.all + '%!');
 			}
 		});
 	});

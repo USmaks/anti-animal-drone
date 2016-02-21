@@ -11,9 +11,11 @@
   "dependencies": {
     "express": "^4.13.4",
     "johnny-five": "^0.9.19",
+    "request": "^2.69.0",
     "serialport": "^2.0.6",
     "socket.io": "^1.4.5",
     "temporal": "^0.5.0",
-    "xbee": "0.0.4"
+    "xbee": "0.0.4",
+    "yargs": "^4.1.0"
   }
 }
