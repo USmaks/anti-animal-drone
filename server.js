@@ -25,7 +25,7 @@ var five = require('johnny-five'), temporal = require('temporal'), board;
 board = new five.Board();
 
 board.on("ready", function(){
-  console.log("CONNECTED");
+  console.log("CONNECTED -> Arduino");
 
   var pm13 = this.pinMode(13, five.Pin.OUTPUT);
   var ledtest = function(){	pm13.digitalWrite(13, 1); };
@@ -51,7 +51,8 @@ serial_xbee.on('data', function(data){
   io.emit('data', {
     name: 'DataFrame',
     text: 'From Child Xbee',
-    type: data.type
+    type: data.type,
+    frame: data
   });
 
 	// console.log('xbee data received: ' + data.type);
@@ -87,10 +88,15 @@ var argv = require('yargs')
 	.argv;
 
 	if(typeof argv.l === 'string' && argv.l.length > 0){
-		console.log('Location was provided');
+		//console.log('Location was provided');
 		weather(argv.l).then(function (currentWeather){
-			console.log(currentWeather.name);
-
+			console.log('In ' + currentWeather.name + '.');
+			console.log('Today\'s temp. is ' + currentWeather.main.temp + ' C,');
+      console.log('         weather is ' + currentWeather.weather.main + ',');
+			console.log('         humidity is ' + currentWeather.main.humidity + ' %,');
+			console.log('         wind speed is ' + currentWeather.wind.speed + ' m/s,');
+			console.log('         wind deg. is ' + currentWeather.wind.deg + ' degree.');
+/*
       io.emit('currentWeather', {
         name: currentWeather.name,
         temp: currentWeather.main.temp,
@@ -100,7 +106,7 @@ var argv = require('yargs')
         winddeg: currentWeather.wind.deg,
         clouds: currentWeather.clouds.all
       });
-
+*/
 		}).catch(function (error){
 			console.log(error);
 		});
