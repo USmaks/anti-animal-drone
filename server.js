@@ -19,7 +19,7 @@ io.on('connection', function (socket) {
 //////////////////////////////////////////////////////////// Server //
 
 // Arduino ///////////////////////////////////////////////////////////
-
+/*
 var five = require('johnny-five'), temporal = require('temporal'), board;
 
 board = new five.Board();
@@ -30,11 +30,13 @@ board.on("ready", function(){
   var pm13 = this.pinMode(13, five.Pin.OUTPUT);
   var ledtest = function(){	pm13.digitalWrite(13, 1); };
   var ledstop = function(){	pm13.digitalWrite(13, 0); };
+  // var sRr =
 
   ledtest();
   setTimeout(() => { ledstop(); }, 2000);
 
 });
+*/
 
 /////////////////////////////////////////////////////////// Arduino //
 
