@@ -66,7 +66,7 @@ atc.setCommand('IS'); //IS
 atc.destination64 = [0x00, 0x13, 0xa2, 0x00, 0x40, 0xbb, 0xb5, 0x2b]; // Child xbee address
 atc.destination16 = [0xff, 0xfe];
 
-  setTimeout(() => { serial_xbee.write( atc.getBytes() ); }, 5000);
+// setTimeout(() => { serial_xbee.write( atc.getBytes() ); }, 5000);
 //setInterval(function(){
 //	serial_xbee.write( atc.getBytes() ); //
 //}, 2000);

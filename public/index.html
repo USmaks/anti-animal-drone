@@ -11,13 +11,16 @@
       margin-top: 36px;
     }
     </style>
+    <script src="http://maps.google.com/maps/api/js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
   </head>
-  <body>
+  <body onload="initmap();">
     <div class="container">
       <div class="row">
         <div class="col-md-6 col-md-offset-3 well">
           <h1 class="text-center">
-            Sensor value from Drone
+            Drone's eye
+            <i class="fa fa-eye"></i>
           </h1>
           <!-- <div class="weather">
           <!-- weather information ->
@@ -39,6 +42,14 @@
         </div>
         <div class="dataFrames">
           <!-- here -->
+        </div>
+        <!-- <button type="button" class="btn btn-default">巡回中</button> -->
+        <button type="button" class="btn btn-danger btn-lg btn-block">強制帰還ボタン</button>
+      </div>
+      <div class="row">
+        <div class="col-md-6 col-md-offset-3 well">
+          <h1 class="text-center">Where is drone?</h1>
+          <div id="map_canvas" style="width:100%;height:300px;"></div>
         </div>
       </div>
     </div>
