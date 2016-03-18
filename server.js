@@ -19,7 +19,7 @@ io.on('connection', function (socket) {
 //////////////////////////////////////////////////////////// Server //
 
 // Arduino ///////////////////////////////////////////////////////////
-/*
+
 var five = require('johnny-five'), temporal = require('temporal'), board;
 
 board = new five.Board();
@@ -27,16 +27,35 @@ board = new five.Board();
 board.on("ready", function(){
   console.log("CONNECTED -> Arduino");
 
-  var pm13 = this.pinMode(13, five.Pin.OUTPUT);
-  var ledtest = function(){	pm13.digitalWrite(13, 1); };
-  var ledstop = function(){	pm13.digitalWrite(13, 0); };
-  // var sRr =
+  // var pm13 = this.pinMode(13, five.Pin.OUTPUT);
+  // var ledtest = function(){	pm13.digitalWrite(13, 1); };
+  // var ledstop = function(){	pm13.digitalWrite(13, 0); };
 
-  ledtest();
-  setTimeout(() => { ledstop(); }, 2000);
+  // Servo Rotate right or left stick
+  var sRr = new five.Servo(13);
+  var sRl = new five.Servo(12);
+  // Servo Tilt right or left stick
+  var sTr = new five.Servo(11);
+  var sTl = new five.Servo(10);
+
+  // start
+  setTimeout(() => { console.log('Count down start!'); }, 2000);
+  setTimeout(() => { console.log('5'); }, 3000);
+  setTimeout(() => { console.log('4'); }, 4000);
+  setTimeout(() => { console.log('3'); }, 5000);
+  setTimeout(() => { console.log('2'); }, 6000);
+  setTimeout(() => { console.log('1'); }, 7000);
+
+  setTimeout(() => { console.log('AAD System\nActivating...'); }, 8000);
+
+  setTimeout(() => {
+
+  }, 9000);
+  // ledtest();
+  // setTimeout(() => { ledstop(); }, 2000);
 
 });
-*/
+
 
 /////////////////////////////////////////////////////////// Arduino //
 
@@ -93,12 +112,12 @@ var argv = require('yargs')
 		//console.log('Location was provided');
 		weather(argv.l).then(function (currentWeather){
 			console.log('In ' + currentWeather.name + '.');
-			console.log('Today\'s temp. is ' + currentWeather.main.temp + ' C,');
-      console.log('         weather is ' + currentWeather.weather.main + ',');
-			console.log('         humidity is ' + currentWeather.main.humidity + ' %,');
-			console.log('         wind speed is ' + currentWeather.wind.speed + ' m/s,');
-			console.log('         wind deg. is ' + currentWeather.wind.deg + ' degree.');
-/*
+			console.log('現在の気温は ' + currentWeather.main.temp + ' ℃,');
+      console.log('      天気は ' + currentWeather.weather.id + ',');
+			console.log('      湿度は ' + currentWeather.main.humidity + ' %,');
+			console.log('      風速は ' + currentWeather.wind.speed + ' m/s,');
+			console.log('   風の方角は ' + currentWeather.wind.deg + ' degree.');
+
       io.emit('currentWeather', {
         name: currentWeather.name,
         temp: currentWeather.main.temp,
@@ -108,7 +127,7 @@ var argv = require('yargs')
         winddeg: currentWeather.wind.deg,
         clouds: currentWeather.clouds.all
       });
-*/
+
 		}).catch(function (error){
 			console.log(error);
 		});
