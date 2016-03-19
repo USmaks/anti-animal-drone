@@ -68,7 +68,7 @@ var serial_xbee = new SerialPort('COM5', {
 });
 
 serial_xbee.on('data', function(data){
-
+// data { data.type, data.bytes }
   io.emit('data', {
     name: 'DataFrame',
     text: 'From Child Xbee',
@@ -76,8 +76,6 @@ serial_xbee.on('data', function(data){
     frame: data
   });
 
-	// console.log('xbee data received: ' + data.type);
-	// console.log(data.bytes[0] + ' ' + data.bytes[1] + ' ' + data.bytes[2] + ' ' + data.bytes[3]+ ' ' + data.bytes[4]+ ' ' + data.bytes[5]+ ' ' + data.bytes[6]+ ' ' + data.bytes[7]+ ' ' + data.bytes[8]+ ' ' + data.bytes[9]+ ' ' + data.bytes[10]+ ' ' + data.bytes[11]+ ' ' + data.bytes[12]+ ' ' + data.bytes[13]+ ' ' + data.bytes[14]+ ' ' + data.bytes[15]+ ' ' + data.bytes[16]+ ' ' + data.bytes[17]+ ' ' + data.bytes[18]+ ' ' + data.bytes[19]+ ' ' + data.bytes[20]+ ' ' + data.bytes[21]+ ' ' + data.bytes[22]);
 });
 
 var atc = new xbee.RemoteATCommand();
